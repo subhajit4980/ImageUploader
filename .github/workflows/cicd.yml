@@ -1,33 +1,36 @@
 name: CICD
+
 on:
   push:
     branches: [deploy-EC2]
+
 jobs:
   build:
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout source
-        uses: actions/checout@v3
-      - name: Setup java
+        uses: actions/checkout@v3
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'termuin'
+          distribution: 'temurin'
           java-version: '17'
       - name: Build Project
         run: mvn clean install -DskipTests
       - name: Login to docker hub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
       - name: Build docker image
-        run: docker build -t AWS/S3/ImageUploader .
-      - name: Publish docker image to docker hub
-        run: docker push AWS/S3/ImageUploader:latest
-deploy:
-  needs: build
-  runs-on: [AWS-EC2]
-  steps:
-    - name: pull image from docker hub
-      run: docker pull AWS/S3/ImageUploader:latest
-    - name: delete old container
-      run: docker rm -f ImageUploader-container
-    - name: run docker container
-      run: docker run -d -p 8080:8080 --name ImageUploader-container AWS/S3/ImageUploader
+        run: docker build -t aws/Image_upload .
+      - name: Publish image to docker hub
+        run: docker push aws/Image_upload:latest
+
+  deploy:
+    needs: build
+    runs-on: [AWS-EC2]
+    steps:
+      - name: Pull Image from docker hub
+        run: docker pull aws/Image_upload:latest
+      - name: Delete old container
+        run: docker rm -f Image_upload-container
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name Image_upload-container aws/Image_upload
