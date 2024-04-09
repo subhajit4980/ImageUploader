@@ -17,8 +17,8 @@ jobs:
           java-version: '17'
       - name: Build Project
         env:
-          ACCESS_KEY:${{ secrets.ACCESS_KEY }}
-          SECRET_KEY:${{ secrets.SECRET_KEY }}
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: mvn clean install -DskipTests
       - name: Login to docker hub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
