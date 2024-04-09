@@ -15,6 +15,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Set AWS credentials
+        run: |
+          echo "ACCESS_KEY=${{ secrets.ACCESS_KEY }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
       - name: Build Project
         run: mvn clean install -DskipTests
       - name: Login to docker hub
