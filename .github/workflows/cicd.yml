@@ -36,4 +36,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f image_upload-container
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name image_upload-container subhajitpatra498/image_upload
+        run: docker run -e ACCESS_KEY=${{secrets.ACCESS_KEY}} -e SECRET_KEY=${{ secrets.SECRET_KEY }} -d -p 8080:8080 --name image_upload-container subhajitpatra498/image_upload
